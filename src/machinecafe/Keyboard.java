@@ -148,5 +148,25 @@ public class Keyboard {
 		}
 	}
 	
+	public int getSucre() {
+		int qte = 0;
+		boolean valide = true;
+		while (valide) {
+			System.out.println("Quelle quantité de sucre dans votre boisson?");
+			try {
+				scan = new Scanner(System.in);
+				qte = scan.nextInt();
+				if(qte > -1 && qte < 6) {
+					valide = false;
+				} else {
+					System.out.println("Entrez une quantité valide svp");
+				}
+			} catch (InputMismatchException e) {
+				System.out.println("Entrez un nombre SVP");
+			}
+		}
+		return qte;
+	}
+	
 
 }

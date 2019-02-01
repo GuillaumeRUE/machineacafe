@@ -8,6 +8,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 public class main {
 	
 	static Keyboard kb = new Keyboard();
@@ -31,33 +37,52 @@ public class main {
 	
 	public static void main(String[] args) {
 		
+		try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/machineacafe", "postgres", "postgres")) {
+			 
+            System.out.println("Java JDBC PostgreSQL Example");
+            System.out.println("Connected to PostgreSQL database!");
+            
+            ArrayList<Ingredient> listeIngredient = new ArrayList<Ingredient>();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM public.ingredient");
+            while (resultSet.next()) {
+            	listeIngredient.add(new Ingredient(resultSet.getString("nom"),resultSet.getInt("quantite")));
+            }
+ 
+        } /*catch (ClassNotFoundException e) {
+            System.out.println("PostgreSQL JDBC driver not found.");
+            e.printStackTrace();
+        }*/ catch (SQLException e) {
+            System.out.println("Connection failure.");
+            e.printStackTrace();
+        }
+		
 		//Liste des ingrédients
 		Ingredient cafe = new Ingredient("café", 10);
 		Ingredient chocolat = new Ingredient("chocolat",10);	
 		Ingredient lait = new Ingredient("lait", 10);
 		Ingredient sucre = new Ingredient("sucre", 10);
+		Ingredient the = new Ingredient("thé", 10);
 		ArrayList<Ingredient> listeIngredient = new ArrayList<Ingredient>();
 		listeIngredient.add(cafe);
 		listeIngredient.add(lait);
 		listeIngredient.add(sucre);
 		listeIngredient.add(chocolat);
+		listeIngredient.add(the);
 		
 		//Création chocolat chaud
 		Map<Ingredient,Integer> z = new HashMap<Ingredient,Integer>();
 		z.put(lait, 2);
-		z.put(sucre,1);
 		z.put(chocolat,3);
 		Boisson boisson1 = new Boisson("chocolat chaud", 1, z);
 		//Création capuccino
 		z = new HashMap<Ingredient,Integer>();
 		z.put(cafe,2);
 		z.put(lait, 1);
-		z.put(sucre,1);
 		Boisson boisson2 = new Boisson("capuccino", 2, z);
 		//Création cafe
 		z = new HashMap<Ingredient,Integer>();
 		z.put(cafe, 3);
-		z.put(sucre,1);
 		Boisson boisson3 = new Boisson("café", 1, z);
 		
 		//Création de la machine à café
@@ -78,8 +103,14 @@ public class main {
 					if(monnaie == 0 || monnaie < boisson.getPrix()) {
 						monnaie += kb.insertMonnaie();
 					}
+					int qteSucre = kb.getSucre();
+					if (sucre.getQuantite() < qteSucre) {
+						System.out.println("Pas assez de sucre");
+						break;
+					}
 					if(machine.acheterBoisson(boisson, monnaie)) {
 						monnaie -= boisson.getPrix();
+						sucre.setQuantite(sucre.getQuantite()-qteSucre);
 					}
 					break;
 				case 2:

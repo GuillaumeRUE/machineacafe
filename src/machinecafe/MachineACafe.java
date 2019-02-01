@@ -10,7 +10,7 @@ public class MachineACafe {
 	private List<Boisson> liste;
 	private ArrayList<Ingredient> listeIngredient;
 	
-	public static final int nbBoissonMax = 3;
+	public static final int nbBoissonMax = 5;
 
 	//Constructeur
 	public MachineACafe(List<Boisson> liste, ArrayList<Ingredient> listeIngredient) {
@@ -100,17 +100,30 @@ public class MachineACafe {
 	
 	public boolean ajouterOuModifier(ArrayList<Ingredient> listeIngredient, Boisson b) {
 		int cpt = 0;
+		boolean the = false;
+		boolean autre = false;
 		for (Ingredient i : listeIngredient) {
-			Keyboard kb = new Keyboard();
-			kb.setQte(i, b);
-			if(b.getListeIngredient().get(i) == 0) {
-				if(i.getNom() != "sucre") {
+			if(!i.getNom().equals("sucre")) {
+				Keyboard kb = new Keyboard();
+				kb.setQte(i, b);
+				if(b.getListeIngredient().get(i) != 0) {
+					if(i.getNom().equals("thé")) {
+						the = true;
+					} else {
+						autre = true;
+					}
+				} else {
 					cpt++;
 				}
-			}
+				
+			}	
 		}
-		if (cpt == 3) {
+		if (cpt == 4) {
 			System.out.println("Impossible de créer une eau chaud ou sucrée");
+			return false;
+		}
+		if (the && autre) {
+			System.out.println("Impossible de mélanger du thé avec autre chose que l'eau et du sucre");
 			return false;
 		}
 		return true;
