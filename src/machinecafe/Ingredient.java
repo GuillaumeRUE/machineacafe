@@ -3,11 +3,13 @@ package machinecafe;
 public class Ingredient {
 	
 	//Attributs
+	private int id;
 	private String nom;
 	private int quantite;
 	
 	//Constructeur
-	public Ingredient(String nom, int quantite) {
+	public Ingredient(int id, String nom, int quantite) {
+		setId(id);
 		setNom(nom);
 		setQuantite(quantite);
 	}
@@ -42,4 +44,13 @@ public class Ingredient {
 		this.quantite = quantite;
 	}
 
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	
 }
