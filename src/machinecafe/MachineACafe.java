@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 public class MachineACafe {
 
+	//attributs
 	private List<Boisson> liste;
 	private ArrayList<Ingredient> listeIngredient;
 	
